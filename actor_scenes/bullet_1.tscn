@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3 uid="uid://b7cqd3drsotw5"]
+
+[ext_resource type="Script" path="res://scripts/bullet_script.gd" id="1_cfjqb"]
+[ext_resource type="Texture2D" uid="uid://b5oo8pc8to8qq" path="res://sprites/bullet_2-sprite_sheet.png" id="2_idomo"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_jqphy"]
+radius = 2.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_mi7a2"]
+radius = 2.0
+
+[node name="Bullet_2_" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("1_cfjqb")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("2_idomo")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+shape = SubResource("CircleShape2D_jqphy")
+
+[node name="DamageArea" type="Area2D" parent="."]
+collision_layer = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DamageArea"]
+shape = SubResource("CircleShape2D_mi7a2")
+debug_color = Color(0.940373, 8.66354e-06, 0.615292, 0.42)

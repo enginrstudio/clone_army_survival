@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://cxb2mgs0m1mpc"]
+
+[ext_resource type="Script" path="res://scripts/health_label_script.gd" id="1_jioww"]
+
+[node name="HealthLabel" type="Label"]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "0"
+horizontal_alignment = 1
+script = ExtResource("1_jioww")

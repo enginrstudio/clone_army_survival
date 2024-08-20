@@ -1,0 +1,118 @@
+[gd_scene load_steps=17 format=3 uid="uid://cb1oigddbr6du"]
+
+[ext_resource type="Script" path="res://scripts/player_script.gd" id="1_f4q6g"]
+[ext_resource type="Script" path="res://scripts/player_input_movement_script.gd" id="2_k2f4m"]
+[ext_resource type="PackedScene" uid="uid://c4ey8pubptuj3" path="res://actor_scenes/gun.tscn" id="3_waw1f"]
+[ext_resource type="PackedScene" uid="uid://cnmchiaaohk8t" path="res://actor_scenes/player_clone.tscn" id="4_a2rw1"]
+[ext_resource type="Texture2D" uid="uid://bqmvm2onn7lmx" path="res://sprites/player_1-sprite_sheet.png" id="5_4jkrk"]
+[ext_resource type="PackedScene" uid="uid://bynhwxewr5o3a" path="res://actor_scenes/health_component.tscn" id="5_cc5b6"]
+[ext_resource type="Script" path="res://scripts/player_clone_controller.gd" id="5_qw6i2"]
+[ext_resource type="PackedScene" uid="uid://cxb2mgs0m1mpc" path="res://game_scenes/health_label.tscn" id="8_co8e8"]
+[ext_resource type="AudioStream" uid="uid://dfco1uftehcu0" path="res://sfx/8bit_gunloop_explosion.wav" id="9_vn50r"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_igvxc"]
+size = Vector2(9, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tvt4o"]
+atlas = ExtResource("5_4jkrk")
+region = Rect2(0, 0, 24, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_723ga"]
+atlas = ExtResource("5_4jkrk")
+region = Rect2(24, 0, 24, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w68ea"]
+atlas = ExtResource("5_4jkrk")
+region = Rect2(0, 32, 24, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0rwtg"]
+atlas = ExtResource("5_4jkrk")
+region = Rect2(24, 32, 24, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_6pmab"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tvt4o")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_723ga")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 4.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w68ea")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0rwtg")
+}],
+"loop": true,
+"name": &"run",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_bqlyn"]
+radius = 6.0
+height = 26.0
+
+[node name="Player" type="CharacterBody2D"]
+collision_mask = 32
+script = ExtResource("1_f4q6g")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0.5, -1.5)
+shape = SubResource("RectangleShape2D_igvxc")
+debug_color = Color(0.938948, 1.46317e-05, 0.621496, 0.42)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+position = Vector2(0, -5)
+sprite_frames = SubResource("SpriteFrames_6pmab")
+animation = &"run"
+autoplay = "idle"
+frame_progress = 0.242414
+
+[node name="PlayerInputMovement" type="Node" parent="." node_paths=PackedStringArray("player_clone_controller", "animated_sprite_2d")]
+script = ExtResource("2_k2f4m")
+acceleration = 500.0
+friction = 1000.0
+max_speed = 300.0
+player_clone_controller = NodePath("../Clones")
+animated_sprite_2d = NodePath("../AnimatedSprite2D")
+
+[node name="Gun" parent="." node_paths=PackedStringArray("sound_effects") instance=ExtResource("3_waw1f")]
+fire_speed = 500.0
+damage = 1
+sound_effects = NodePath("../GunSFX")
+
+[node name="ShootingPosition" type="Marker2D" parent="Gun"]
+position = Vector2(30, -4)
+
+[node name="HealthComponent" parent="." groups=["player"] instance=ExtResource("5_cc5b6")]
+collision_mask = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HealthComponent"]
+position = Vector2(0, -2)
+shape = SubResource("CapsuleShape2D_bqlyn")
+
+[node name="Clones" type="Node2D" parent="."]
+script = ExtResource("5_qw6i2")
+clone = ExtResource("4_a2rw1")
+clone_spacing = Vector2(30, 0)
+
+[node name="HealthLabel" parent="." instance=ExtResource("8_co8e8")]
+offset_left = -20.0
+offset_top = -36.0
+offset_right = 20.0
+offset_bottom = -13.0
+vertical_alignment = 1
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(1.2, 1.2)
+
+[node name="GunSFX" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("9_vn50r")
+volume_db = -14.053

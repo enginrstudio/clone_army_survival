@@ -1,0 +1,97 @@
+[gd_scene load_steps=14 format=3 uid="uid://cnmchiaaohk8t"]
+
+[ext_resource type="Texture2D" uid="uid://bqmvm2onn7lmx" path="res://sprites/player_1-sprite_sheet.png" id="1_sgj8r"]
+[ext_resource type="Script" path="res://scripts/player_clone_script.gd" id="1_uiqs2"]
+[ext_resource type="PackedScene" uid="uid://c4ey8pubptuj3" path="res://actor_scenes/gun.tscn" id="3_42vic"]
+[ext_resource type="PackedScene" uid="uid://bynhwxewr5o3a" path="res://actor_scenes/health_component.tscn" id="4_ssoh7"]
+[ext_resource type="PackedScene" uid="uid://cxb2mgs0m1mpc" path="res://game_scenes/health_label.tscn" id="5_a6hxv"]
+[ext_resource type="AudioStream" uid="uid://dfco1uftehcu0" path="res://sfx/8bit_gunloop_explosion.wav" id="6_staqx"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tvt4o"]
+atlas = ExtResource("1_sgj8r")
+region = Rect2(0, 0, 24, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_723ga"]
+atlas = ExtResource("1_sgj8r")
+region = Rect2(24, 0, 24, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w68ea"]
+atlas = ExtResource("1_sgj8r")
+region = Rect2(0, 32, 24, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0rwtg"]
+atlas = ExtResource("1_sgj8r")
+region = Rect2(24, 32, 24, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_i2qaa"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tvt4o")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_723ga")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 4.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w68ea")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0rwtg")
+}],
+"loop": true,
+"name": &"run",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_igvxc"]
+size = Vector2(9, 25)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_lei73"]
+radius = 5.0
+height = 26.0
+
+[node name="PlayerClone" type="CharacterBody2D" node_paths=PackedStringArray("animated_sprite_2d")]
+collision_mask = 32
+script = ExtResource("1_uiqs2")
+animated_sprite_2d = NodePath("AnimatedSprite2D")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+position = Vector2(0, -5)
+sprite_frames = SubResource("SpriteFrames_i2qaa")
+animation = &"run"
+autoplay = "idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0.5, -1.5)
+shape = SubResource("RectangleShape2D_igvxc")
+debug_color = Color(0.938948, 1.46317e-05, 0.621496, 0.42)
+
+[node name="Gun" parent="." instance=ExtResource("3_42vic")]
+fire_speed = 500.0
+damage = 1
+
+[node name="ShootingPosition" type="Marker2D" parent="Gun"]
+position = Vector2(30, -4)
+
+[node name="HealthComponent" parent="." groups=["player"] instance=ExtResource("4_ssoh7")]
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HealthComponent"]
+position = Vector2(0, -2)
+shape = SubResource("CapsuleShape2D_lei73")
+
+[node name="HealthLabel" parent="." instance=ExtResource("5_a6hxv")]
+offset_left = -20.0
+offset_top = -36.0
+offset_right = 20.0
+offset_bottom = -13.0
+
+[node name="GunSFX" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("6_staqx")
+volume_db = -14.053
